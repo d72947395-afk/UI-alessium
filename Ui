@@ -1,0 +1,444 @@
+--[[
+    ╔══════════════════════════════════════════╗
+    ║   ✦ AlessiumCHEATS | UI TEMPLATE ✦       ║
+    ║   Settings • чистый UI каркас            ║
+    ║   t.me/Alessium1337                      ║
+    ╚══════════════════════════════════════════╝
+]]
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
+
+local LocalPlayer = Players.LocalPlayer
+local _PG = LocalPlayer:WaitForChild("PlayerGui")
+
+local HAS_KEYBOARD = UserInputService.KeyboardEnabled
+local IS_PC        = HAS_KEYBOARD
+local DEVICE_ICON  = IS_PC and "🖥️" or "📱"
+
+-- ============================================================
+-- UI
+-- ============================================================
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "AlessiumUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.IgnoreGuiInset = true
+pcall(function() ScreenGui.Parent = CoreGui end)
+if not ScreenGui.Parent then ScreenGui.Parent = _PG end
+
+local Main = Instance.new("Frame")
+Main.Size = UDim2.new(0, 340, 0, 360)
+Main.Position = UDim2.new(0.5, -170, 0.5, -180)
+Main.BackgroundColor3 = Color3.fromRGB(20, 12, 30)
+Main.BorderSizePixel = 0
+Main.Active = true
+Main.Draggable = true
+Main.ClipsDescendants = true
+Main.Visible = true
+Main.Parent = ScreenGui
+
+Instance.new("UICorner", Main).CornerRadius = UDim.new(0, 12)
+local MainStroke = Instance.new("UIStroke", Main)
+MainStroke.Color = Color3.fromRGB(140, 60, 220)
+MainStroke.Thickness = 1.5
+MainStroke.Transparency = 0.3
+
+local MainGrad = Instance.new("UIGradient", Main)
+MainGrad.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(28, 15, 45)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(15, 8, 25)),
+}
+MainGrad.Rotation = 45
+
+local TopBar = Instance.new("Frame", Main)
+TopBar.Size = UDim2.new(1, 0, 0, 34)
+TopBar.BackgroundColor3 = Color3.fromRGB(35, 18, 55)
+TopBar.BorderSizePixel = 0
+local TopBarGrad = Instance.new("UIGradient", TopBar)
+TopBarGrad.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(90, 30, 160)),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(140, 60, 220)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(90, 30, 160)),
+}
+
+local Title = Instance.new("TextLabel", TopBar)
+Title.Size = UDim2.new(1, -100, 1, 0)
+Title.Position = UDim2.new(0, 10, 0, 0)
+Title.BackgroundTransparency = 1
+Title.Text = "✦ AlessiumCHEATS | Settings"
+Title.TextColor3 = Color3.fromRGB(230, 200, 255)
+Title.TextSize = 12
+Title.Font = Enum.Font.GothamBold
+Title.TextXAlignment = Enum.TextXAlignment.Left
+
+local MinimizeBtn = Instance.new("TextButton", TopBar)
+MinimizeBtn.Size = UDim2.new(0, 24, 0, 24)
+MinimizeBtn.Position = UDim2.new(1, -56, 0, 5)
+MinimizeBtn.BackgroundColor3 = Color3.fromRGB(60, 30, 100)
+MinimizeBtn.Text = "—"
+MinimizeBtn.TextColor3 = Color3.fromRGB(230, 200, 255)
+MinimizeBtn.TextSize = 14
+MinimizeBtn.Font = Enum.Font.GothamBold
+MinimizeBtn.BorderSizePixel = 0
+Instance.new("UICorner", MinimizeBtn).CornerRadius = UDim.new(0, 6)
+
+local CloseBtn = Instance.new("TextButton", TopBar)
+CloseBtn.Size = UDim2.new(0, 24, 0, 24)
+CloseBtn.Position = UDim2.new(1, -28, 0, 5)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(60, 30, 100)
+CloseBtn.Text = "✕"
+CloseBtn.TextColor3 = Color3.fromRGB(255, 180, 220)
+CloseBtn.TextSize = 12
+CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.BorderSizePixel = 0
+Instance.new("UICorner", CloseBtn).CornerRadius = UDim.new(0, 6)
+
+local ContentFrame = Instance.new("ScrollingFrame", Main)
+ContentFrame.Size = UDim2.new(1, -12, 1, -46)
+ContentFrame.Position = UDim2.new(0, 6, 0, 40)
+ContentFrame.BackgroundTransparency = 1
+ContentFrame.BorderSizePixel = 0
+ContentFrame.ScrollBarThickness = 3
+ContentFrame.ScrollBarImageColor3 = Color3.fromRGB(140, 60, 220)
+ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+ContentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+local ContentList = Instance.new("UIListLayout", ContentFrame)
+ContentList.Padding = UDim.new(0, 6)
+
+-- ============================================================
+-- КОМПОНЕНТЫ UI
+-- ============================================================
+local function CreateToggle(parent, text, default)
+    local frame = Instance.new("Frame", parent)
+    frame.Size = UDim2.new(1, -6, 0, 28)
+    frame.BackgroundColor3 = Color3.fromRGB(28, 15, 45)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(0.72, 0, 1, 0)
+    label.Position = UDim2.new(0, 8, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(220, 190, 255)
+    label.TextSize = 11
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextTruncate = Enum.TextTruncate.AtEnd
+
+    local tb = Instance.new("Frame", frame)
+    tb.Size = UDim2.new(0, 34, 0, 18)
+    tb.Position = UDim2.new(1, -42, 0.5, -9)
+    tb.BackgroundColor3 = default and Color3.fromRGB(140, 60, 220) or Color3.fromRGB(50, 30, 70)
+    tb.BorderSizePixel = 0
+    Instance.new("UICorner", tb).CornerRadius = UDim.new(1, 0)
+
+    local knob = Instance.new("Frame", tb)
+    knob.Size = UDim2.new(0, 14, 0, 14)
+    knob.Position = default and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)
+    knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    knob.BorderSizePixel = 0
+    Instance.new("UICorner", knob).CornerRadius = UDim.new(1, 0)
+
+    local state = default
+    local btn = Instance.new("TextButton", frame)
+    btn.Size = UDim2.new(1, 0, 1, 0)
+    btn.BackgroundTransparency = 1
+    btn.Text = ""
+
+    btn.MouseButton1Click:Connect(function()
+        state = not state
+        TweenService:Create(tb, TweenInfo.new(0.2), {
+            BackgroundColor3 = state and Color3.fromRGB(140, 60, 220) or Color3.fromRGB(50, 30, 70),
+        }):Play()
+        TweenService:Create(knob, TweenInfo.new(0.2), {
+            Position = state and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7),
+        }):Play()
+    end)
+    return frame
+end
+
+local function CreateSlider(parent, text, min, max, default)
+    local frame = Instance.new("Frame", parent)
+    frame.Size = UDim2.new(1, -6, 0, 42)
+    frame.BackgroundColor3 = Color3.fromRGB(28, 15, 45)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(0.72, 0, 0, 18)
+    label.Position = UDim2.new(0, 8, 0, 3)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(220, 190, 255)
+    label.TextSize = 11
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextTruncate = Enum.TextTruncate.AtEnd
+
+    local vl = Instance.new("TextLabel", frame)
+    vl.Size = UDim2.new(0.26, 0, 0, 18)
+    vl.Position = UDim2.new(0.74, -6, 0, 3)
+    vl.BackgroundTransparency = 1
+    vl.Text = string.format("%.2f", default)
+    vl.TextColor3 = Color3.fromRGB(180, 130, 255)
+    vl.TextSize = 11
+    vl.Font = Enum.Font.GothamBold
+    vl.TextXAlignment = Enum.TextXAlignment.Right
+
+    local barBg = Instance.new("Frame", frame)
+    barBg.Size = UDim2.new(1, -16, 0, 7)
+    barBg.Position = UDim2.new(0, 8, 0, 27)
+    barBg.BackgroundColor3 = Color3.fromRGB(50, 30, 70)
+    barBg.BorderSizePixel = 0
+    Instance.new("UICorner", barBg).CornerRadius = UDim.new(1, 0)
+
+    local fill = Instance.new("Frame", barBg)
+    fill.Size = UDim2.new((default - min) / (max - min), 0, 1, 0)
+    fill.BackgroundColor3 = Color3.fromRGB(140, 60, 220)
+    fill.BorderSizePixel = 0
+    Instance.new("UICorner", fill).CornerRadius = UDim.new(1, 0)
+
+    local dragging = false
+    local function update(input)
+        local pos = math.clamp((input.Position.X - barBg.AbsolutePosition.X) / barBg.AbsoluteSize.X, 0, 1)
+        local value = min + (max - min) * pos
+        fill.Size = UDim2.new(pos, 0, 1, 0)
+        vl.Text = string.format("%.2f", value)
+    end
+
+    barBg.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = true; update(input)
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+            update(input)
+        end
+    end)
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+            dragging = false
+        end
+    end)
+    return frame
+end
+
+local function CreateKeybind(parent, text, default)
+    local frame = Instance.new("Frame", parent)
+    frame.Size = UDim2.new(1, -6, 0, 28)
+    frame.BackgroundColor3 = Color3.fromRGB(28, 15, 45)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(0.55, 0, 1, 0)
+    label.Position = UDim2.new(0, 8, 0, 0)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(220, 190, 255)
+    label.TextSize = 11
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local kb = Instance.new("TextButton", frame)
+    kb.Size = UDim2.new(0, 70, 0, 20)
+    kb.Position = UDim2.new(1, -78, 0.5, -10)
+    kb.BackgroundColor3 = Color3.fromRGB(60, 30, 100)
+    kb.Text = default.Name
+    kb.TextColor3 = Color3.fromRGB(230, 200, 255)
+    kb.TextSize = 11
+    kb.Font = Enum.Font.GothamBold
+    kb.BorderSizePixel = 0
+    Instance.new("UICorner", kb).CornerRadius = UDim.new(0, 6)
+
+    local waiting = false
+    kb.MouseButton1Click:Connect(function()
+        waiting = true; kb.Text = "..."
+    end)
+    UserInputService.InputBegan:Connect(function(input)
+        if waiting and input.UserInputType == Enum.UserInputType.Keyboard then
+            waiting = false
+            kb.Text = input.KeyCode.Name
+        end
+    end)
+    return frame
+end
+
+local function CreateLabel(parent, text)
+    local label = Instance.new("TextLabel", parent)
+    label.Size = UDim2.new(1, -6, 0, 20)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(180, 130, 255)
+    label.TextSize = 12
+    label.Font = Enum.Font.GothamBold
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    return label
+end
+
+local function CreateModeSelector(parent, text, options, default)
+    local frame = Instance.new("Frame", parent)
+    frame.Size = UDim2.new(1, -6, 0, 54)
+    frame.BackgroundColor3 = Color3.fromRGB(28, 15, 45)
+    frame.BorderSizePixel = 0
+    Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
+
+    local label = Instance.new("TextLabel", frame)
+    label.Size = UDim2.new(1, -12, 0, 18)
+    label.Position = UDim2.new(0, 8, 0, 3)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(220, 190, 255)
+    label.TextSize = 11
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local btnRow = Instance.new("Frame", frame)
+    btnRow.Size = UDim2.new(1, -12, 0, 26)
+    btnRow.Position = UDim2.new(0, 6, 0, 24)
+    btnRow.BackgroundTransparency = 1
+    local rl = Instance.new("UIListLayout", btnRow)
+    rl.FillDirection = Enum.FillDirection.Horizontal
+    rl.Padding = UDim.new(0, 4)
+
+    local buttons = {}
+    local current = default
+
+    local function refresh()
+        for name, btn in pairs(buttons) do
+            local active = (name == current)
+            TweenService:Create(btn, TweenInfo.new(0.15), {
+                BackgroundColor3 = active and Color3.fromRGB(140, 60, 220) or Color3.fromRGB(50, 30, 70),
+                TextColor3 = active and Color3.fromRGB(255, 230, 255) or Color3.fromRGB(180, 140, 230),
+            }):Play()
+        end
+    end
+
+    for _, opt in ipairs(options) do
+        local btn = Instance.new("TextButton", btnRow)
+        btn.Size = UDim2.new(0, opt.width or 75, 1, 0)
+        btn.BackgroundColor3 = Color3.fromRGB(50, 30, 70)
+        btn.Text = opt.label
+        btn.TextColor3 = Color3.fromRGB(180, 140, 230)
+        btn.TextSize = 10
+        btn.Font = Enum.Font.GothamBold
+        btn.BorderSizePixel = 0
+        Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+
+        btn.MouseButton1Click:Connect(function()
+            current = opt.value
+            refresh()
+        end)
+        buttons[opt.value] = btn
+    end
+    refresh()
+    return frame
+end
+
+-- ============================================================
+-- SETTINGS PAGE
+-- ============================================================
+CreateLabel(ContentFrame, "⚙ ОБЩИЕ")
+CreateToggle(ContentFrame, "Показывать меню", true)
+CreateToggle(ContentFrame, "Показывать FPS", true)
+CreateToggle(ContentFrame, "Показывать водяной знак", true)
+
+CreateLabel(ContentFrame, "🎨 ИНТЕРФЕЙС")
+CreateSlider(ContentFrame, "Прозрачность меню", 0, 1, 0.0)
+CreateSlider(ContentFrame, "Размер шрифта", 8, 20, 11)
+CreateModeSelector(ContentFrame, "Тема:", {
+    {label = "🌙 Тёмная", value = "dark", width = 70},
+    {label = "☀ Светлая", value = "light", width = 70},
+    {label = "💜 Фиолет", value = "purple", width = 70},
+}, "purple")
+
+CreateLabel(ContentFrame, "⌨ УПРАВЛЕНИЕ")
+CreateKeybind(ContentFrame, "Открыть/закрыть меню", Enum.KeyCode.RightShift)
+CreateKeybind(ContentFrame, "Свернуть", Enum.KeyCode.RightControl)
+
+CreateLabel(ContentFrame, "ℹ ИНФО")
+CreateLabel(ContentFrame, "")
+CreateLabel(ContentFrame, "💬 t.me/Alessium1337")
+CreateLabel(ContentFrame, "Ver. v5.2 • UI Template")
+
+-- ============================================================
+-- WATERMARK
+-- ============================================================
+local Watermark = Instance.new("Frame", ScreenGui)
+Watermark.Name = "Watermark"
+Watermark.Size = UDim2.new(0, 0, 0, 30)
+Watermark.AutomaticSize = Enum.AutomaticSize.X
+Watermark.Position = UDim2.new(0, 10, 0, 10)
+Watermark.BackgroundColor3 = Color3.fromRGB(25, 15, 40)
+Watermark.BackgroundTransparency = 0.15
+Watermark.BorderSizePixel = 0
+Watermark.Active = true
+
+Instance.new("UICorner", Watermark).CornerRadius = UDim.new(0, 8)
+local WmStroke = Instance.new("UIStroke", Watermark)
+WmStroke.Color = Color3.fromRGB(160, 60, 255)
+WmStroke.Thickness = 1.5
+WmStroke.Transparency = 0.3
+
+local WmList = Instance.new("UIListLayout", Watermark)
+WmList.FillDirection = Enum.FillDirection.Horizontal
+WmList.Padding = UDim.new(0, 8)
+WmList.VerticalAlignment = Enum.VerticalAlignment.Center
+
+local WmPad = Instance.new("UIPadding", Watermark)
+WmPad.PaddingLeft = UDim.new(0, 10)
+WmPad.PaddingRight = UDim.new(0, 10)
+
+local function makeWmLabel(text, color, size, font)
+    local lbl = Instance.new("TextLabel", Watermark)
+    lbl.Text = text
+    lbl.Size = UDim2.new(0, 0, 1, 0)
+    lbl.AutomaticSize = Enum.AutomaticSize.X
+    lbl.BackgroundTransparency = 1
+    lbl.TextColor3 = color
+    lbl.Font = font or Enum.Font.Gotham
+    lbl.TextSize = size or 11
+    return lbl
+end
+
+makeWmLabel(DEVICE_ICON, Color3.fromRGB(200, 130, 255), 14, Enum.Font.GothamBold)
+makeWmLabel("ALESSIUM", Color3.fromRGB(235, 200, 255), 12, Enum.Font.GothamBold)
+makeWmLabel("│", Color3.fromRGB(70, 45, 100), 12)
+makeWmLabel("Settings", Color3.fromRGB(200, 130, 255), 11)
+
+Watermark.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1
+    or input.UserInputType == Enum.UserInputType.Touch then
+        Main.Visible = not Main.Visible
+    end
+end)
+
+-- ============================================================
+-- BUTTONS
+-- ============================================================
+local minimized = false
+MinimizeBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    TweenService:Create(Main, TweenInfo.new(0.25), {
+        Size = minimized and UDim2.new(0, 340, 0, 34) or UDim2.new(0, 340, 0, 360)
+    }):Play()
+    ContentFrame.Visible = not minimized
+end)
+
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+UserInputService.InputBegan:Connect(function(input, gp)
+    if gp then return end
+    if input.KeyCode == Enum.KeyCode.RightShift then
+        Main.Visible = not Main.Visible
+    end
+end)
+
+print("[AlessiumUI] Settings-only template loaded • t.me/Alessium1337")
